@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../common/color-consts.dart';
+import '../common/color_consts.dart';
 
 class WordsOnBoard extends StatelessWidget {
   static const DigitsFontSize = 18.0;

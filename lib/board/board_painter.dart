@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'board-widget.dart';
-import '../common/color-consts.dart';
+import 'board_widget.dart';
+import '../common/color_consts.dart';
 import 'dart:math';
 
 class BoardPainter extends CustomPainter {

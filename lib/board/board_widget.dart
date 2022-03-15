@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../common/color-consts.dart';
-import 'board-painter.dart';
-import 'words-on-board.dart';
+import '../common/color_consts.dart';
+import 'board_painter.dart';
+import 'words_on_board.dart';
 
 class BoardWidget extends StatelessWidget {
   //棋盘内边界，  棋盘上的路数指定文字的高度

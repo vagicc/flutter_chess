@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'routes/battle-page.dart';
+import 'routes/battle_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.brown,
       ),
-      home: BattlePage(),
+      home: const BattlePage(),
     );
   }
 }

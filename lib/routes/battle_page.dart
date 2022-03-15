@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../board/board-widget.dart';
+import '../board/board_widget.dart';
 
 class BattlePage extends StatelessWidget {
   //棋盘的纵横方向的边距
