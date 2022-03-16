@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../common/color_consts.dart';
 import 'board_painter.dart';
 import 'words_on_board.dart';
+import 'pieces_painter.dart';
+import '../cchess/phase.dart';
 
 class BoardWidget extends StatelessWidget {
   //棋盘内边界，  棋盘上的路数指定文字的高度
@@ -24,6 +26,10 @@ class BoardWidget extends StatelessWidget {
       ),
       child: CustomPaint(
         painter: BoardPainter(width: width),
+        foregroundPainter: PiecesPainter(
+          width: width,
+          phase: Phase.defaultPhase(),
+        ),
         child: Container(
           margin: EdgeInsets.symmetric(
             vertical: Padding,
@@ -33,7 +39,7 @@ class BoardWidget extends StatelessWidget {
                 Padding -
                 WordsOnBoard.DigitsFontSize / 2,
           ),
-          child:const WordsOnBoard(),
+          child: const WordsOnBoard(),
         ),
       ),
     );

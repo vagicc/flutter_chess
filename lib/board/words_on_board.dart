@@ -38,7 +38,10 @@ class WordsOnBoard extends StatelessWidget {
 
     //放置上、中、下三部分到一个列布局模式中，上和中、中和下之间使用 Expanded 对象平分垂直方向多出来的布局空间
     return DefaultTextStyle(
-      style: const TextStyle(color: ColorConsts.BoardTips),
+      style: const TextStyle(
+        color: ColorConsts.BoardTips,
+        fontFamily: 'Chess',
+      ),
       child: Column(
         children: <Widget>[
           Row(children: bChildren),
