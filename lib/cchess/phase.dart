@@ -61,7 +61,24 @@ class Phase {
 
     // 其它位置全部填空
     for (var i = 0; i < 90; i++) {
-      // _pieces[i] ??= Piece.Empty;
+      // _pieces[i] ??Piece.Empty;
     }
+  }
+
+  bool move(int from, int to) {
+    if (!validateMove(from, to)) return false;
+
+    _pieces[to] = _pieces[from];
+    _pieces[from] = Piece.Empty;
+
+    //交换行棋方
+    // _side = Side.oppo(_side);
+
+    return true;
+  }
+
+  bool validateMove(int from, int to) {
+    // TODO:
+    return true;
   }
 }

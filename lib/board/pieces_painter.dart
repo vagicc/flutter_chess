@@ -8,8 +8,13 @@ import '../cchess/phase.dart';
 class PiecesPainter extends PainterBase {
   final Phase phase;
   late double pieceSide;
+  final int focusIndex, blurIndex; // 添加棋盘上的棋子移动、选择位置指示
 
-  PiecesPainter({required double width, required this.phase})
+  PiecesPainter(
+      {required double width,
+      required this.phase,
+      this.focusIndex = -1,
+      this.blurIndex = -1})
       : super(width: width) {
     pieceSide = squareSide * 0.9;
   }
@@ -25,6 +30,8 @@ class PiecesPainter extends PainterBase {
       pieceSide: pieceSide,
       offsetX: BoardWidget.Padding + squareSide / 2,
       offsetY: BoardWidget.Padding + BoardWidget.DigitsHeight + squareSide / 2,
+      focusIndex: focusIndex,
+      blurIndex: blurIndex,
     );
   }
 
@@ -43,6 +50,8 @@ class PiecesPainter extends PainterBase {
     required double pieceSide,
     required double offsetX,
     required double offsetY,
+    int focusIndex = -1,
+    int blurIndex = -1,
   }) {
     final left = offsetX, top = offsetY;
 
@@ -117,6 +126,35 @@ class PiecesPainter extends PainterBase {
       // 将文字绘制到 Canvas 上
       textPainter.paint(canvas, textOffset);
     });
+
+    //绘制选中，移动棋子
+    if (focusIndex != -1) {
+      final int row = focusIndex ~/ 9, column = focusIndex % 9;
+
+      paint.color = ColorConsts.FocusPosition;
+      paint.style = PaintingStyle.stroke;
+      paint.strokeWidth = 8;
+
+      canvas.drawCircle(
+        Offset(left + column * squareSide, top + row * squareSide),
+        pieceSide / 2,
+        paint,
+      );
+    }
+
+    if (blurIndex != -1) {
+      //
+      final row = blurIndex ~/ 9, column = blurIndex % 9;
+
+      paint.color = ColorConsts.BlurPosition;
+      paint.style = PaintingStyle.fill;
+
+      canvas.drawCircle(
+        Offset(left + column * squareSide, top + row * squareSide),
+        pieceSide / 2 * 0.8,
+        paint,
+      );
+    }
   }
 }
 

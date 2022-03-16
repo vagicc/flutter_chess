@@ -4,13 +4,14 @@ import '../common/color_consts.dart';
 import 'dart:math';
 import 'painter_base.dart';
 
+/* 画棋盘线 */
 class BoardPainter extends PainterBase {
   // 棋盘的宽度， 横盘上线格的总宽度，每一个格子的边长
   // final double width;
   // final thePaint = Paint();
 
   BoardPainter({required double width}) : super(width: width);
-  
+
   @override
   void paint(Canvas canvas, Size size) {
     doPaint(
@@ -46,13 +47,13 @@ class BoardPainter extends PainterBase {
     paint.strokeWidth = 2;
     canvas.drawRect(Rect.fromLTWH(left, top, gridWidth, squareSide * 9), paint);
 
-    //中轴线
-    paint.strokeWidth = 1;
-    canvas.drawLine(
-      Offset(left + gridWidth / 2, top),
-      Offset(left + gridWidth / 2, top + squareSide * 9),
-      paint,
-    );
+    // //中轴线
+    // paint.strokeWidth = 1;
+    // canvas.drawLine(
+    //   Offset(left + gridWidth / 2, top),
+    //   Offset(left + gridWidth / 2, top + squareSide * 9),
+    //   paint,
+    // );
 
     //8根中间横线
     for (var i = 1; i <= 8; i++) {
@@ -65,7 +66,7 @@ class BoardPainter extends PainterBase {
 
     //上下各6根短竖线
     for (var i = 0; i < 8; i++) {
-      if (i == 4) continue;
+      // if (i == 4) continue;
 
       canvas.drawLine(
         Offset(left + squareSide * i, top),
