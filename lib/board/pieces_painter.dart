@@ -77,6 +77,7 @@ class PiecesPainter extends PainterBase {
     final textStyle = TextStyle(
       color: ColorConsts.PieceTextColor,
       fontSize: pieceSide * 0.8,
+      fontFamily: 'Chess',
       height: 1.0,
     );
 
