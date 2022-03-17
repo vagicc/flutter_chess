@@ -26,7 +26,7 @@ class MainMenu extends StatelessWidget {
         children: <Widget>[
           const Expanded(child: SizedBox(), flex: 4),
           Text(
-            "中国象棋",
+            "中国象棋=",
             style: nameStyle,
             textAlign: TextAlign.center,
           ),
