@@ -26,7 +26,7 @@ class MainMenu extends StatelessWidget {
         children: <Widget>[
           const Expanded(child: SizedBox(), flex: 4),
           Text(
-            "中国象棋=",
+            "中国象棋",
             style: nameStyle,
             textAlign: TextAlign.center,
           ),
@@ -51,7 +51,11 @@ class MainMenu extends StatelessWidget {
               "挑战云主机",
               style: menuItemStyle,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => BattlePage(),
+              ));
+            },
           ),
           const Expanded(child: SizedBox()),
           TextButton(

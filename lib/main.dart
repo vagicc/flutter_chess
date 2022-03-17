@@ -8,6 +8,8 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  static const StatusBarHeight = 28.0;
+
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
         fontFamily: 'Chess', //主题颜色
       ),
       home: const MainMenu(),
-      debugShowCheckedModeBanner: false,  //去掉右上角的“debug"
+      debugShowCheckedModeBanner: false, //去掉右上角的“debug"
     );
   }
 }
