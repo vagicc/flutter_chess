@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'routes/battle_page.dart';
+import 'routes/main_menu.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,9 +14,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        primarySwatch: Colors.yellow,  //主题颜色
+        primarySwatch: Colors.brown,
+        fontFamily: 'Chess', //主题颜色
       ),
-      home: const BattlePage(),
+      home: const MainMenu(),
+      debugShowCheckedModeBanner: false,  //去掉右上角的“debug"
     );
   }
 }
