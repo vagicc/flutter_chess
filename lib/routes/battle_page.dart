@@ -12,7 +12,7 @@ import '../main.dart';
  */
 class BattlePage extends StatefulWidget {
   //棋盘的纵横方向的边距
-  static const BoardMarginV = 10.0, BoardMarginH = 10.0;
+  static double boardMargin = 10.0, screenPaddingH = 10.0;
 
   const BattlePage({Key? key}) : super(key: key);
 
@@ -21,6 +21,17 @@ class BattlePage extends StatefulWidget {
 }
 
 class _BattlePageState extends State<BattlePage> {
+  void calcScreenPaddingH() {
+    final windowSize = MediaQuery.of(context).size;
+    double height = windowSize.height, width = windowSize.width; //屏幕的高和宽
+
+    if (height / width < 16.0 / 9.0) {
+      width = height / 16 * 9;
+      BattlePage.screenPaddingH =
+          (windowSize.width - width) / 2 - BattlePage.boardMargin;
+    }
+  }
+
   Widget CreatePageHeader() {
     final titleStyle =
         TextStyle(fontSize: 28, color: ColorConsts.DarkTextPrimary);
@@ -70,13 +81,10 @@ class _BattlePageState extends State<BattlePage> {
   }
 
   Widget CreateBoard() {
-    //
-    final windowSize = MediaQuery.of(context).size;
-
     return Container(
       margin: EdgeInsets.symmetric(
-        horizontal: BattlePage.BoardMarginH,
-        vertical: BattlePage.BoardMarginV,
+        horizontal: BattlePage.screenPaddingH,
+        vertical: BattlePage.boardMargin,
       ),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -84,7 +92,8 @@ class _BattlePageState extends State<BattlePage> {
       ),
       child: BoardWidget(
         // 棋盘的宽度已经扣除了部分边界
-        width: windowSize.width - BattlePage.BoardMarginH * 2,
+        width:
+            MediaQuery.of(context).size.width - BattlePage.screenPaddingH * 2,
         onBoardTap: onBoardTap,
       ),
     );
@@ -99,7 +108,7 @@ class _BattlePageState extends State<BattlePage> {
         borderRadius: BorderRadius.circular(5),
         color: ColorConsts.BoardBackground,
       ),
-      margin: EdgeInsets.symmetric(horizontal: BattlePage.BoardMarginH),
+      margin: EdgeInsets.symmetric(horizontal: BattlePage.screenPaddingH),
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(children: <Widget>[
         Expanded(child: SizedBox()),
@@ -110,6 +119,63 @@ class _BattlePageState extends State<BattlePage> {
         TextButton(child: Text('分析局面', style: buttonStyle), onPressed: () {}),
         Expanded(child: SizedBox()),
       ]),
+    );
+  }
+
+  /* 底部的空间 */
+  Widget BuildFooter() {
+    final size = MediaQuery.of(context).size;
+    String manualText = '<暂无棋谱>';
+
+    if (size.height / size.width > 16 / 9) {
+      //长屏幕布显示处理:直接显示着法列表
+      return buildManualPanel(manualText);
+    } else {
+      //短屏幕显示处理：只显示一个按纽，点击它后弹出着法列表
+      return buildExpandableManaulPanel(manualText);
+    }
+  }
+
+  /* 长屏幕：着法显示 */
+  Widget buildManualPanel(String text) {
+    final manualStyle = TextStyle(
+      fontSize: 18,
+      color: ColorConsts.DarkTextSecondary,
+      height: 1.5,
+    );
+
+    return Expanded(
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 16),
+        child: SingleChildScrollView(child: Text(text, style: manualStyle)),
+      ),
+    );
+  }
+
+  /* 短屏幕：着法显示 */
+  Widget buildExpandableManaulPanel(String text) {
+    final manualStyle = TextStyle(fontSize: 18, height: 1.5);
+    return Expanded(
+      child: IconButton(
+        icon: Icon(Icons.expand_less, color: ColorConsts.DarkTextPrimary),
+        onPressed: () => showDialog(
+            context: context,
+            barrierDismissible: false,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('棋谱', style: TextStyle(color: ColorConsts.Primary)),
+                content: SingleChildScrollView(
+                  child: Text(text, style: manualStyle),
+                ),
+                actions: [
+                  TextButton(
+                    child: Text("好的"),
+                    onPressed: () => Navigator.of(context).pop(),
+                  )
+                ],
+              );
+            }),
+      ),
     );
   }
 
@@ -162,6 +228,7 @@ class _BattlePageState extends State<BattlePage> {
 
   @override
   Widget build(BuildContext context) {
+    calcScreenPaddingH(); //调用方法来计算边宽度留白
     return Scaffold(
       // appBar: AppBar(title: Text('將帥象棋')),
       backgroundColor: ColorConsts.DarkBackground,
@@ -170,6 +237,7 @@ class _BattlePageState extends State<BattlePage> {
           CreatePageHeader(),
           CreateBoard(),
           CreateOperatorBar(),
+          BuildFooter(),
         ],
       ),
     );
