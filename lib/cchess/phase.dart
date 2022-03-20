@@ -1,4 +1,5 @@
 import 'cc_base.dart';
+import 'steps_validate.dart';
 
 class Phase {
   String _side = Side.Red; //当前行棋方
@@ -96,7 +97,10 @@ class Phase {
   }
 
   bool validateMove(int from, int to) {
-    // TODO:
+    // 移动的棋子的选手，应该是当前方
+    if (Side.of(_pieces[from]) != _side) return false;
+
+    return (StepValidate.validate(this, Move(from, to)));
     return true;
   }
 
@@ -131,5 +135,24 @@ class Phase {
     fen += '$halfMove $fullMove';
 
     return fen;
+  }
+
+  //复制相同的类
+  Phase.clone(Phase other) {
+    // _pieces=List<String>();
+    _pieces = List.generate(90, (index) => Piece.Empty);
+
+    other._pieces.forEach((piece) => _pieces.add(piece));
+
+    _side = other._side;
+    halfMove = other.halfMove;
+    fullMove = other.fullMove;
+  }
+
+  void moveTest(Move move, {trunSide = false}) {
+    _pieces[move.to] = _pieces[move.from];
+    _pieces[move.from] = Piece.Empty;
+
+    if (trunSide) _side = Side.oppo(_side);
   }
 }
