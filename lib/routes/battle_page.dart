@@ -4,6 +4,7 @@ import '../cchess/cc_base.dart';
 import '../common/color_consts.dart';
 import '../game/battle.dart';
 import '../main.dart';
+import '../engine/clound_engine.dart';
 
 /* 
 要在 vscode 中，如果需要将一个 StatelessWidget 修改为 StatefulWidget，
@@ -21,6 +22,38 @@ class BattlePage extends StatefulWidget {
 }
 
 class _BattlePageState extends State<BattlePage> {
+  String _status = '';
+  changeStatus(String status) => setState(() => _status = status);
+
+  engineToGo() async {
+    changeStatus('对方思考中……');
+
+    final response = await CloudEngine().search(Battle.shared.phase);
+
+    if (response.type == 'move') {
+      final step = response.value;
+      Battle.shared.phase.move(step.from, step.to);
+
+      final result = Battle.shared.scanBattleResult();
+
+      switch (result) {
+        case BattleResult.Pending:
+          changeStatus('请走棋……');
+          break;
+        case BattleResult.Win:
+          changeStatus('你输了');
+          break;
+        case BattleResult.Lose:
+          break;
+        case BattleResult.Draw:
+          // todo:
+          break;
+      }
+    } else {
+      changeStatus('出鑤：${response.type}');
+    }
+  }
+
   void calcScreenPaddingH() {
     final windowSize = MediaQuery.of(context).size;
     double height = windowSize.height, width = windowSize.width; //屏幕的高和宽
@@ -70,7 +103,7 @@ class _BattlePageState extends State<BattlePage> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              '[游戏状态]',
+              _status,
               maxLines: 1,
               style: subTitleStyle,
             ),
@@ -206,7 +239,20 @@ class _BattlePageState extends State<BattlePage> {
         //
       } else if (Battle.shared.move(Battle.shared.focusIndex, pos)) {
         // 现在点击的棋子和上一次选择棋子不同边，要么是吃子，要么是移动棋子到空白处
-        // todo: scan game result
+        final result = Battle.shared.scanBattleResult();
+
+        switch (result) {
+          case BattleResult.Pending:
+            // 玩家走一步棋后，如果游戏还没有结束，则启动引擎走棋
+            engineToGo();
+            break;
+          case BattleResult.Win:
+            break;
+          case BattleResult.Lose:
+            break;
+          case BattleResult.Draw:
+            break;
+        }
       }
       //
     } else {

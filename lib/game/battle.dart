@@ -1,4 +1,5 @@
 import '../cchess/phase.dart';
+import '../cchess/cc_base.dart';
 
 // Battle类:集中管理棋盘上的棋子、对战结果、引擎调用等事务
 class Battle {
@@ -46,6 +47,11 @@ class Battle {
   clear() {
     _blurIndex = _focusIndex = -1;
   }
+
+  BattleResult scanBattleResult() {
+  // TODO:
+  return BattleResult.Pending;
+}
 }
 
 /* 单例工厂示例 */
