@@ -145,7 +145,7 @@ class _BattlePageState extends State<BattlePage> {
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(children: <Widget>[
         Expanded(child: SizedBox()),
-        TextButton(child: Text('新对局', style: buttonStyle), onPressed: () {}),
+        TextButton(child: Text('新对局', style: buttonStyle), onPressed: newGame),
         Expanded(child: SizedBox()),
         TextButton(child: Text('悔棋', style: buttonStyle), onPressed: () {}),
         Expanded(child: SizedBox()),
@@ -261,6 +261,33 @@ class _BattlePageState extends State<BattlePage> {
     }
 
     setState(() {});
+  }
+
+  //重新开始
+  newGame() {
+    //确认重新开始
+    confirm() {
+      Navigator.of(context).pop();
+      Battle.shared.newGame();
+      setState(() {});
+    }
+
+    //取消重新开始
+    cancel() => Navigator.of(context).pop();
+
+    //点击重新开始，需要用户确认
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('放弃对局？', style: TextStyle(color: ColorConsts.Primary)),
+            content: SingleChildScrollView(child: Text('你确定放弃')),
+            actions: <Widget>[
+              TextButton(child: Text('确定'), onPressed: confirm),
+              TextButton(child: Text('取消'), onPressed: cancel),
+            ],
+          );
+        });
   }
 
   @override

@@ -16,9 +16,14 @@ class Phase {
   String pieceAt(int index) => _pieces[index];
 
   Phase.defaultPhase() {
+    initDefaultPhase();
+  }
+
+  void initDefaultPhase() {
     //
     _side = Side.Red;
 
+    _pieces = List.generate(90, (index) => Piece.Empty);
     // 从上到下，棋盘第一行
     _pieces[0 * 9 + 0] = Piece.BlackRook;
     _pieces[0 * 9 + 1] = Piece.BlackKnight;
@@ -64,9 +69,9 @@ class Phase {
     _pieces[6 * 9 + 8] = Piece.RedPawn;
 
     // 其它位置全部填空
-    for (var i = 0; i < 90; i++) {
-      // _pieces[i] ??Piece.Empty;
-    }
+    // for (var i = 0; i < 90; i++) {
+    //   // _pieces[i] ??Piece.Empty;
+    // }
   }
 
   bool move(int from, int to) {

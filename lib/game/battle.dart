@@ -48,10 +48,15 @@ class Battle {
     _blurIndex = _focusIndex = -1;
   }
 
+  newGame() {
+    Battle.shared.phase.initDefaultPhase();
+    _focusIndex = _blurIndex = Move.InvalidIndex;
+  }
+
   BattleResult scanBattleResult() {
-  // TODO:
-  return BattleResult.Pending;
-}
+    // TODO:
+    return BattleResult.Pending;
+  }
 }
 
 /* 单例工厂示例 */
