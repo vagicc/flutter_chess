@@ -6,6 +6,8 @@ class Phase {
   List<String> _pieces = List.generate(90, (index) => Piece.Empty); //
   // var _pieces = List<String>(90);
 
+  BattleResult result=BattleResult.Pending;  //
+
   //无吃子频数、总回合数
   int halfMove = 0, fullMove = 0;
 

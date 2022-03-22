@@ -42,10 +42,13 @@ class _BattlePageState extends State<BattlePage> {
           break;
         case BattleResult.Win:
           changeStatus('你输了');
+          gotWin();
           break;
         case BattleResult.Lose:
+          gotLose();
           break;
         case BattleResult.Draw:
+          gotDraw();
           // todo:
           break;
       }
@@ -247,10 +250,13 @@ class _BattlePageState extends State<BattlePage> {
             engineToGo();
             break;
           case BattleResult.Win:
+            gotWin();
             break;
           case BattleResult.Lose:
+            gotLose();
             break;
           case BattleResult.Draw:
+            gotDraw();
             break;
         }
       }
@@ -288,6 +294,73 @@ class _BattlePageState extends State<BattlePage> {
             ],
           );
         });
+  }
+
+  //显示胜利框
+  void gotWin() {
+    Battle.shared.phase.result = BattleResult.Win;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('羸了', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('恭喜您，胜利了!!'),
+          actions: <Widget>[
+            TextButton(child: Text("再来一盘"), onPressed: newGame),
+            TextButton(
+              child: Text('关闭'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //显示失败框
+  void gotLose() {
+    Battle.shared.phase.result = BattleResult.Lose;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('输了', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('你输了，虽败犹荣，可敬的对手'),
+          actions: <Widget>[
+            TextButton(child: Text('再来一盘'), onPressed: newGame),
+            TextButton(
+                child: Text('关闭'),
+                onPressed: () => Navigator.of(context).pop()),
+          ],
+        );
+      },
+    );
+  }
+
+  //显示和棋
+  void gotDraw() {
+    Battle.shared.phase.result = BattleResult.Draw;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('和棋', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('势当力敌，和棋了'),
+          actions: <Widget>[
+            TextButton(child: Text('再来一盘'), onPressed: newGame),
+            TextButton(
+                child: Text('关闭'),
+                onPressed: () => Navigator.of(context).pop()),
+          ],
+        );
+      },
+    );
   }
 
   @override
