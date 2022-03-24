@@ -86,6 +86,10 @@ class _BattlePageState extends State<BattlePage> {
                 onPressed: () => Navigator.of(context).pop(),
               ),
               Expanded(child: SizedBox()),
+              Hero(
+                tag: 'logo',
+                child: Image.asset('images/logo-mini.png'),
+              ),
               Text('单机对战', style: titleStyle),
               Expanded(child: SizedBox()),
               IconButton(
