@@ -15,5 +15,4 @@ int binarySearch(List<int> array, int start, int end, int key) {
   }
 
   return binarySearch(array, middle + 1, end - 1, key);
-  return 2;
 }

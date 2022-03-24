@@ -42,10 +42,13 @@ class _BattlePageState extends State<BattlePage> {
           break;
         case BattleResult.Win:
           changeStatus('你输了');
+          gotWin();
           break;
         case BattleResult.Lose:
+          gotLose();
           break;
         case BattleResult.Draw:
+          gotDraw();
           // todo:
           break;
       }
@@ -145,7 +148,7 @@ class _BattlePageState extends State<BattlePage> {
       padding: EdgeInsets.symmetric(vertical: 2),
       child: Row(children: <Widget>[
         Expanded(child: SizedBox()),
-        TextButton(child: Text('新对局', style: buttonStyle), onPressed: () {}),
+        TextButton(child: Text('新对局', style: buttonStyle), onPressed: newGame),
         Expanded(child: SizedBox()),
         TextButton(child: Text('悔棋', style: buttonStyle), onPressed: () {}),
         Expanded(child: SizedBox()),
@@ -162,9 +165,11 @@ class _BattlePageState extends State<BattlePage> {
 
     if (size.height / size.width > 16 / 9) {
       //长屏幕布显示处理:直接显示着法列表
+      print("长屏幕布显示处理:直接显示着法列表");
       return buildManualPanel(manualText);
     } else {
       //短屏幕显示处理：只显示一个按纽，点击它后弹出着法列表
+      print("短屏幕显示处理：只显示一个按纽，点击它后弹出着法列表");
       return buildExpandableManaulPanel(manualText);
     }
   }
@@ -247,10 +252,13 @@ class _BattlePageState extends State<BattlePage> {
             engineToGo();
             break;
           case BattleResult.Win:
+            gotWin();
             break;
           case BattleResult.Lose:
+            gotLose();
             break;
           case BattleResult.Draw:
+            gotDraw();
             break;
         }
       }
@@ -261,6 +269,100 @@ class _BattlePageState extends State<BattlePage> {
     }
 
     setState(() {});
+  }
+
+  //重新开始
+  newGame() {
+    //确认重新开始
+    confirm() {
+      Navigator.of(context).pop();
+      Battle.shared.newGame();
+      setState(() {});
+    }
+
+    //取消重新开始
+    cancel() => Navigator.of(context).pop();
+
+    //点击重新开始，需要用户确认
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('放弃对局？', style: TextStyle(color: ColorConsts.Primary)),
+            content: SingleChildScrollView(child: Text('你确定放弃')),
+            actions: <Widget>[
+              TextButton(child: Text('确定'), onPressed: confirm),
+              TextButton(child: Text('取消'), onPressed: cancel),
+            ],
+          );
+        });
+  }
+
+  //显示胜利框
+  void gotWin() {
+    Battle.shared.phase.result = BattleResult.Win;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('羸了', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('恭喜您，胜利了!!'),
+          actions: <Widget>[
+            TextButton(child: Text("再来一盘"), onPressed: newGame),
+            TextButton(
+              child: Text('关闭'),
+              onPressed: () => Navigator.of(context).pop(),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  //显示失败框
+  void gotLose() {
+    Battle.shared.phase.result = BattleResult.Lose;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('输了', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('你输了，虽败犹荣，可敬的对手'),
+          actions: <Widget>[
+            TextButton(child: Text('再来一盘'), onPressed: newGame),
+            TextButton(
+                child: Text('关闭'),
+                onPressed: () => Navigator.of(context).pop()),
+          ],
+        );
+      },
+    );
+  }
+
+  //显示和棋
+  void gotDraw() {
+    Battle.shared.phase.result = BattleResult.Draw;
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('和棋', style: TextStyle(color: ColorConsts.Primary)),
+          content: Text('势当力敌，和棋了'),
+          actions: <Widget>[
+            TextButton(child: Text('再来一盘'), onPressed: newGame),
+            TextButton(
+                child: Text('关闭'),
+                onPressed: () => Navigator.of(context).pop()),
+          ],
+        );
+      },
+    );
   }
 
   @override
