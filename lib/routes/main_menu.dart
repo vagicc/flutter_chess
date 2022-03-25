@@ -24,9 +24,13 @@ class MainMenu extends StatelessWidget {
     final menuItems = Center(
       child: Column(
         children: <Widget>[
-          const Expanded(child: SizedBox(), flex: 4),
+          const Expanded(child: SizedBox(), flex: 3),
+          Hero(
+            tag: 'logo',
+            child: Image.asset('images/logo.png'),
+          ),
           Text(
-            "中国象棋",
+            "将帅象棋",
             style: nameStyle,
             textAlign: TextAlign.center,
           ),
@@ -74,6 +78,16 @@ class MainMenu extends StatelessWidget {
       backgroundColor: ColorConsts.LightBackground,
       body: Stack(
         children: <Widget>[
+          Positioned(
+            child: Image(image: AssetImage('images/mei.png')),
+            right: 0,
+            top: 0,
+          ),
+          Positioned(
+            child: Image(image: AssetImage('images/zhu.png')),
+            left: 0,
+            bottom: 0,
+          ),
           menuItems,
           //设置按钮
           Positioned(
