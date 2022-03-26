@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../common/color_consts.dart';
 import '../main.dart';
 import 'battle_page.dart';
+import '../engine/engine.dart';
 
 class MainMenu extends StatelessWidget {
   const MainMenu({Key? key}) : super(key: key);
@@ -44,7 +45,7 @@ class MainMenu extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) {
-                  return const BattlePage();
+                  return  BattlePage(EngineType.Native);
                 }),
               );
             },
@@ -57,7 +58,7 @@ class MainMenu extends StatelessWidget {
             ),
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => BattlePage(),
+                builder: (context) => BattlePage(EngineType.Cloud),
               ));
             },
           ),

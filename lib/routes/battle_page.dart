@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../board/board_widget.dart';
 import '../cchess/cc_base.dart';
 import '../common/color_consts.dart';
+import '../engine/engine.dart';
+import '../engine/native_engine.dart';
 import '../game/battle.dart';
 import '../main.dart';
 import '../engine/clound_engine.dart';
@@ -14,8 +16,12 @@ import '../engine/clound_engine.dart';
 class BattlePage extends StatefulWidget {
   //棋盘的纵横方向的边距
   static double boardMargin = 10.0, screenPaddingH = 10.0;
+  final EngineType engineType;
+  final AiEngine engine;
 
-  const BattlePage({Key? key}) : super(key: key);
+  BattlePage(this.engineType)
+      : engine =
+            engineType == EngineType.Cloud ? CloudEngine() : NativeEngine();
 
   @override
   State<BattlePage> createState() => _BattlePageState();
@@ -28,7 +34,8 @@ class _BattlePageState extends State<BattlePage> {
   engineToGo() async {
     changeStatus('对方思考中……');
 
-    final response = await CloudEngine().search(Battle.shared.phase);
+    // final response = await CloudEngine().search(Battle.shared.phase);
+    final response = await widget.engine.search(Battle.shared.phase);
 
     if (response.type == 'move') {
       final step = response.value;
@@ -90,7 +97,10 @@ class _BattlePageState extends State<BattlePage> {
                 tag: 'logo',
                 child: Image.asset('images/logo-mini.png'),
               ),
-              Text('单机对战', style: titleStyle),
+              Text(
+                widget.engineType == EngineType.Cloud ? '挑战云主机' : '单机对战',
+                style: titleStyle,
+              ),
               Expanded(child: SizedBox()),
               IconButton(
                 icon: Icon(Icons.settings, color: ColorConsts.DarkTextPrimary),
@@ -376,6 +386,9 @@ class _BattlePageState extends State<BattlePage> {
 
     //使用默认开局棋子分布
     Battle.shared.init();
+
+    // 启动引擎
+    widget.engine.startup();
   }
 
   @override
@@ -393,5 +406,12 @@ class _BattlePageState extends State<BattlePage> {
         ],
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    // 关闭引擎
+    widget.engine.shutdown();
+    super.dispose();
   }
 }

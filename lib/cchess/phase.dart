@@ -6,10 +6,13 @@ class Phase {
   List<String> _pieces = List.generate(90, (index) => Piece.Empty); //
   // var _pieces = List<String>(90);
 
-  BattleResult result=BattleResult.Pending;  //
+  BattleResult result = BattleResult.Pending; //
 
   //无吃子频数、总回合数
   int halfMove = 0, fullMove = 0;
+
+  String lastCapturedPhase = '';
+  final _history = <Move>[];
 
   get side => _side;
 
@@ -74,6 +77,8 @@ class Phase {
     // for (var i = 0; i < 90; i++) {
     //   // _pieces[i] ??Piece.Empty;
     // }
+
+    lastCapturedPhase = toFen();
   }
 
   bool move(int from, int to) {
@@ -101,6 +106,23 @@ class Phase {
     _side = Side.oppo(_side);
 
     return true;
+  }
+
+  // 根据引擎要求，我们将上次咋子以后的所有无咋子着法列出来
+  String movesSinceLastCaptured() {
+    //
+    var steps = '', posAfterLastCaptured = 0;
+
+    for (var i = _history.length - 1; i >= 0; i--) {
+      if (_history[i].captured != Piece.Empty) break;
+      posAfterLastCaptured = i;
+    }
+
+    for (var i = posAfterLastCaptured; i < _history.length; i++) {
+      steps += ' ${_history[i].step}';
+    }
+
+    return steps.length > 0 ? steps.substring(1) : '';
   }
 
   bool validateMove(int from, int to) {
