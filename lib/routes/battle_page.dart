@@ -164,7 +164,12 @@ class _BattlePageState extends State<BattlePage> {
         Expanded(child: SizedBox()),
         TextButton(child: Text('新对局', style: buttonStyle), onPressed: newGame),
         Expanded(child: SizedBox()),
-        TextButton(child: Text('悔棋', style: buttonStyle), onPressed: () {}),
+        TextButton(
+            child: Text('悔棋', style: buttonStyle),
+            onPressed: () {
+              Battle.shared.regret(steps: 2);
+              setState(() {});
+            }),
         Expanded(child: SizedBox()),
         TextButton(child: Text('分析局面', style: buttonStyle), onPressed: () {}),
         Expanded(child: SizedBox()),

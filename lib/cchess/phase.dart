@@ -1,5 +1,6 @@
 import 'cc_base.dart';
 import 'steps_validate.dart';
+import 'cc_recorder.dart';
 
 class Phase {
   String _side = Side.Red; //当前行棋方
@@ -9,10 +10,16 @@ class Phase {
   BattleResult result = BattleResult.Pending; //
 
   //无吃子频数、总回合数
-  int halfMove = 0, fullMove = 0;
+  // int halfMove = 0, fullMove = 0;
+  // String lastCapturedPhase = '';
+  // final _history = <Move>[];
+  CCRecorder _recorder = CCRecorder(
+      lastCapturedPhase: ''); //CCRecorder(lastCapturedPhase: toFen())
 
-  String lastCapturedPhase = '';
-  final _history = <Move>[];
+  get halfMove => _recorder.halfMove;
+  get fullMove => _recorder.fullMove;
+  get lastMove => _recorder.last;
+  get lastCapturedPhase => _recorder.lastCapturedPhase;
 
   get side => _side;
 
@@ -78,34 +85,26 @@ class Phase {
     //   // _pieces[i] ??Piece.Empty;
     // }
 
-    lastCapturedPhase = toFen();
+    // lastCapturedPhase = toFen();
+    _recorder = CCRecorder(lastCapturedPhase: toFen());
   }
 
-  bool move(int from, int to) {
-    if (!validateMove(from, to)) return false;
+  String? move(int from, int to) {
+    //
+    if (!validateMove(from, to)) return null;
 
-    //记录无吃子步数
-    if (_pieces[to] != Piece.Empty) {
-      halfMove = 0;
-    } else {
-      halfMove++;
-    }
+    final captured = _pieces[to];
 
-    //记录总回合数
-    if (fullMove == 0) {
-      fullMove++;
-    } else if (side == Side.Black) {
-      fullMove++;
-    }
-
-    //修改棋盘
+    // 修改棋盘
     _pieces[to] = _pieces[from];
     _pieces[from] = Piece.Empty;
 
-    //交换行棋方
+    _recorder.stepIn(Move(from, to, captured: captured), this);
+
+    // 交换走棋方
     _side = Side.oppo(_side);
 
-    return true;
+    return captured;
   }
 
   // 根据引擎要求，我们将上次咋子以后的所有无咋子着法列出来
@@ -113,13 +112,13 @@ class Phase {
     //
     var steps = '', posAfterLastCaptured = 0;
 
-    for (var i = _history.length - 1; i >= 0; i--) {
-      if (_history[i].captured != Piece.Empty) break;
+    for (var i = _recorder.stepsCount - 1; i >= 0; i--) {
+      if (_recorder.stepAt(i).captured != Piece.Empty) break;
       posAfterLastCaptured = i;
     }
 
-    for (var i = posAfterLastCaptured; i < _history.length; i++) {
-      steps += ' ${_history[i].step}';
+    for (var i = posAfterLastCaptured; i < _recorder.stepsCount; i++) {
+      steps += ' ${_recorder.stepAt(i).step}';
     }
 
     return steps.length > 0 ? steps.substring(1) : '';
@@ -161,7 +160,8 @@ class Phase {
 
     fen += ' - - ';
 
-    fen += '$halfMove $fullMove';
+    // fen += '$halfMove $fullMove';
+    fen += '${_recorder?.halfMove ?? 0} ${_recorder?.fullMove ?? 0}';
 
     return fen;
   }
@@ -174,8 +174,9 @@ class Phase {
     other._pieces.forEach((piece) => _pieces.add(piece));
 
     _side = other._side;
-    halfMove = other.halfMove;
-    fullMove = other.fullMove;
+    // halfMove = other.halfMove;
+    // fullMove = other.fullMove;
+    _recorder = other._recorder;
   }
 
   void moveTest(Move move, {trunSide = false}) {
@@ -183,5 +184,50 @@ class Phase {
     _pieces[move.from] = Piece.Empty;
 
     if (trunSide) _side = Side.oppo(_side);
+  }
+
+  /* 悔棋 */
+  bool regret() {
+    // 首先撤销最后一条行棋记录
+    final lastMove = _recorder.removeLast();
+    if (lastMove == null) return false;
+
+    // 还原到最后一步行棋之前的局面
+    _pieces[lastMove.from] = _pieces[lastMove.to];
+    _pieces[lastMove.to] = lastMove.captured;
+
+    // 回调行棋方
+    _side = Side.oppo(_side);
+
+    // 还原着法计数器
+    final counterMarks = CCRecorder.fromCounterMarks(lastMove.counterMarks);
+    _recorder.halfMove = counterMarks.halfMove;
+    _recorder.fullMove = counterMarks.fullMove;
+
+    /// 更新最近一个咋子着法
+    /// 这儿有点逻辑，因为引擎理解局面需要传递上一次的吃子局面，以及此后的无咋子着法列表
+    /// 所以如果刚撤销的着法是吃子着法，我们就需要再向前找上一个吃子着法
+    if (lastMove.captured != Piece.Empty) {
+      //
+      // 查找上一个吃子局面（或开局），NativeEngine 需要
+      final tempPhase = Phase.clone(this);
+
+      final moves = _recorder.reverseMovesToPrevCapture();
+      moves.forEach((move) {
+        //
+        tempPhase._pieces[move.from] = tempPhase._pieces[move.to];
+        tempPhase._pieces[move.to] = move.captured;
+
+        tempPhase._side = Side.oppo(tempPhase._side);
+      });
+
+      _recorder.lastCapturedPhase = tempPhase.toFen();
+    }
+
+    // 将游戏结果重新设置为未决
+    // 例如引擎已经将你杀败，你点击悔棋后，需要将游戏结果从失败变回未决
+    result = BattleResult.Pending;
+
+    return true;
   }
 }

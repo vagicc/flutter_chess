@@ -70,12 +70,18 @@ class Piece {
 
 class Move {
   static const InvalidIndex = -1;
-  int from=0, to=0;
+  int from = 0, to = 0;
   int fx = 0, fy = 0, tx = 0, ty = 0; // 左上角为坐标原点
-  String captured='';
+  String captured = '';
   String step = ''; // 'step' is the ucci engine's move-string
 
-  Move(this.from, this.to, {this.captured = Piece.Empty}) {
+  String counterMarks = '0 0'; // 这一步走完后的 FEN 记数，用于悔棋时恢复 FEN 步数 Counter
+
+  Move(
+    this.from,
+    this.to, {
+    this.captured = Piece.Empty,
+  }) {
     //
     fx = from % 9;
     fy = from ~/ 9;
