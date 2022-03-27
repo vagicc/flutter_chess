@@ -9,7 +9,8 @@ class CCRecorder {
 
   CCRecorder({required this.lastCapturedPhase});
 
-  stepAt(int index) => _history[index];
+  // stepAt(int index) => _history[index];
+  Move stepAt(int index) => _history[index];
 
   get stepsCount => _history.length;
 
@@ -73,6 +74,23 @@ class CCRecorder {
   @override
   String toString() {
     return '$halfMove $fullMove';
+  }
+
+  // 从着法列表生成双列文字，供对战局面显示
+  String buildManualText({cols = 2}) {
+    //
+    var manualText = '';
+
+    for (var i = 0; i < _history.length; i++) {
+      manualText += '${i < 9 ? ' ' : ''}${i + 1}. ${_history[i].stepName}　';
+      if ((i + 1) % cols == 0) manualText += '\n';
+    }
+
+    if (manualText.isEmpty) {
+      manualText = '<暂无招法>';
+    }
+
+    return manualText;
   }
 
 }

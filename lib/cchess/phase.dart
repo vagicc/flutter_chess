@@ -1,4 +1,5 @@
 import 'cc_base.dart';
+import 'step_name.dart';
 import 'steps_validate.dart';
 import 'cc_recorder.dart';
 
@@ -95,6 +96,11 @@ class Phase {
 
     final captured = _pieces[to];
 
+    final move = Move(from, to, captured: captured);
+    // 翻译着法为中文，后续实现
+    StepName.translate(this, move);
+    _recorder.stepIn(move, this);
+
     // 修改棋盘
     _pieces[to] = _pieces[from];
     _pieces[from] = Piece.Empty;
@@ -123,6 +129,8 @@ class Phase {
 
     return steps.length > 0 ? steps.substring(1) : '';
   }
+
+  get manualText => _recorder.buildManualText();
 
   bool validateMove(int from, int to) {
     // 移动的棋子的选手，应该是当前方

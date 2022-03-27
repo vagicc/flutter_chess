@@ -180,7 +180,8 @@ class _BattlePageState extends State<BattlePage> {
   /* 底部的空间 */
   Widget BuildFooter() {
     final size = MediaQuery.of(context).size;
-    String manualText = '<暂无棋谱>';
+    // String manualText = '<暂无棋谱>';
+    final manualText = Battle.shared.phase.manualText;
 
     if (size.height / size.width > 16 / 9) {
       //长屏幕布显示处理:直接显示着法列表
