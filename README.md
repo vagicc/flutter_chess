@@ -14,3 +14,5 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+中国象棋通用引擎协议 UCCI https://gitbook.cn/gitchat/column/5e9d67352b34772795873df4/topic/5ea289492b3477279587f937
